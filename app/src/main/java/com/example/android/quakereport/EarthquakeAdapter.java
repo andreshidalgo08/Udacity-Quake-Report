@@ -18,6 +18,8 @@ import java.util.Date;
  */
 
 public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
+    private static final String LOCATION_SEPARATOR = " of ";
+
     public EarthquakeAdapter(@NonNull Context context, @NonNull ArrayList<Earthquake> objects) {
         super(context, 0, objects);
     }
@@ -27,9 +29,13 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
         TextView magnitudeTextView;
-        TextView locationTextView;
+        TextView locationOffsetTextView;
+        TextView primaryLocationTextView;
         TextView dateTextView;
         TextView timeTextView;
+
+        String primaryLocation;
+        String locationOffset;
 
         SimpleDateFormat dateFormatter = new SimpleDateFormat("LLL dd, yyyy");
         SimpleDateFormat timeFormatter = new SimpleDateFormat("h:mm a");
@@ -39,14 +45,27 @@ public class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         }
 
         magnitudeTextView = (TextView) view.findViewById(R.id.magnitude);
-        locationTextView = (TextView) view.findViewById(R.id.location);
+        locationOffsetTextView = (TextView) view.findViewById(R.id.location_offset);
+        primaryLocationTextView = (TextView) view.findViewById(R.id.primary_location);
         dateTextView = (TextView) view.findViewById(R.id.date);
         timeTextView = (TextView) view.findViewById(R.id.time);
 
         Earthquake currentEarthquake = getItem(position);
 
+        String originalLocation = currentEarthquake.getLocation();
+        if (originalLocation.contains(LOCATION_SEPARATOR)) {
+            String[] parts = originalLocation.split(LOCATION_SEPARATOR);
+            locationOffset = parts[0];
+            primaryLocation = parts[1];
+        }
+        else {
+            locationOffset = getContext().getString(R.string.near_the);
+            primaryLocation = originalLocation;
+        }
+
         magnitudeTextView.setText(currentEarthquake.getMagnitude());
-        locationTextView.setText(currentEarthquake.getLocation());
+        locationOffsetTextView.setText(locationOffset);
+        primaryLocationTextView.setText(primaryLocation);
         dateTextView.setText(dateFormatter.format(new Date(currentEarthquake.getTimeInMilliseconds())));
         timeTextView.setText(timeFormatter.format(new Date(currentEarthquake.getTimeInMilliseconds())));
 
