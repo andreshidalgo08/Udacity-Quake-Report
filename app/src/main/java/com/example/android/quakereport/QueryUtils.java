@@ -56,7 +56,8 @@ public final class QueryUtils {
                 earthquakes.add(new Earthquake(
                         properties.getDouble("mag"),
                         properties.getString("place"),
-                        properties.getLong("time")
+                        properties.getLong("time"),
+                        properties.getString("url")
                 ));
 
             }
